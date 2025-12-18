@@ -4,7 +4,7 @@ const algorithm = 'aes-256-cbc';
 
 const key = crypto
   .createHash('sha256')
-  .update("baratHippo")
+  .update(process.env.KEY)
   .digest()
   .slice(0, 32);
 
