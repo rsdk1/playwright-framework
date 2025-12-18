@@ -10,6 +10,7 @@ test.describe('Amazon Automation', () => {
     // const searchProduct = encrypt(process.env.SEARCHPRODUCT);
     console.log("hello"+process.env.ENCRYPTED_SEARCHPRODUCT);
     const searchProduct = decrypt(process.env.ENCRYPTED_SEARCHPRODUCT);
+    console.log(searchProduct);
     
     // console.log('ENCRYPTED_SEARCHPRODUCT=', encrypt('laptop'));
     await home.goto();
