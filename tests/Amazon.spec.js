@@ -1,15 +1,22 @@
 import { test } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
+import { encrypt, decrypt } from '../utils/encrypt';
+//import 'dotenv/config';
 
 test.describe('Amazon Automation', () => {
   test('Amazon', async ({ page }) => {
     const home = new HomePage(page);
 
-
-
+    // const searchProduct = encrypt(process.env.SEARCHPRODUCT);
+    console.log("hello"+process.env.ENCRYPTED_SEARCHPRODUCT);
+    const searchProduct = decrypt(process.env.ENCRYPTED_SEARCHPRODUCT);
+    
+    // console.log('ENCRYPTED_SEARCHPRODUCT=', encrypt('laptop'));
     await home.goto();
-    await home.searchProduct('laptop');
+    await home.searchProduct(searchProduct);
+
+
+
   });
 });
 
- 

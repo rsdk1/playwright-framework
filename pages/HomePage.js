@@ -10,7 +10,7 @@ export class HomePage {
     await this.page.goto('https://www.amazon.in');
   }
 
-  async SearchProduct(ProductName) {
+  async searchProduct(ProductName) {
     await this.SearchBox.fill(ProductName);
     await this.SearchButton.click();
   }
