@@ -42,9 +42,9 @@ export default defineConfig({
     baseURL: 'https://www.amazon.in',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: 'on',
     screenshot:'on',
-    video:'retain-on-failure'
+    video:'on'
   },
 
   /* Configure projects for major browsers */
