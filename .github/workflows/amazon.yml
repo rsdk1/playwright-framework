@@ -2,6 +2,17 @@ name: Amazon test
 
 on:
   workflow_dispatch:
+
+  inputs:
+      browser:
+        description: "Select browser to run Playwright tests"
+        required: true
+        default: "chromium"
+        type: choice
+        options:
+          - chromium
+          - firefox
+          - webkit
       
 jobs:
   test:
