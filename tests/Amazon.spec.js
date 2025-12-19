@@ -16,13 +16,15 @@ test.describe('Amazon Automation', () => {
     await home.goto();
     const continueShoppinButton = await page.locator('//*[text()="Continue shopping"]').isVisible();
 
+
     if (continueShoppinButton) {
       await page.locator('//*[text()="Continue shopping"]').click();
     }
-    else if (chromiumError)
-    {
-     
-     await page.locator('//*[text()="Go to the Amazon.in home page to continue shopping"]').click();
+
+    const chromiumError = await page.locator('//*[text()="Go to the Amazon.in home page to continue shopping"]').isVisible();
+    if (chromiumError) {
+
+      await page.locator('//*[text()="Go to the Amazon.in home page to continue shopping"]').click();
 
     }
 
