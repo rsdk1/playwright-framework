@@ -37,7 +37,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright tests
-        run: npx playwright test Amazon.spec.js --project=chromium
+        run: npx playwright test Amazon.spec.js --project=${{ inputs.browser }}
         continue-on-error: true   
 
       - name: Upload Playwright Report
