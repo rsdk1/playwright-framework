@@ -8,12 +8,21 @@ test.describe('Amazon Automation', () => {
     const home = new HomePage(page);
 
     // const searchProduct = encrypt(process.env.SEARCHPRODUCT);
-    console.log("hello"+process.env.ENCRYPTED_SEARCHPRODUCT);
+    console.log("hello" + process.env.ENCRYPTED_SEARCHPRODUCT);
     const searchProduct = decrypt(process.env.ENCRYPTED_SEARCHPRODUCT);
-    console.log("-"+searchProduct);
-    
+    console.log("-" + searchProduct);
+
     // console.log('ENCRYPTED_SEARCHPRODUCT=', encrypt('laptop'));
     await home.goto();
+    const continueShoppinButton = await page.locator('//*[text()="Continue shopping"]').isVisible();
+
+    if (continueShoppinButton) {
+      await page.locator('//*[text()="Continue shopping"]').click();
+    }
+    else {
+
+    }
+
     await home.searchProduct(searchProduct);
 
 
