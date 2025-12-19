@@ -12,7 +12,11 @@ on:
           - chromium
           - firefox
           - webkit
-
+      workers:
+        description: "Select how many workers"
+        required: true
+        default: '1'
+      
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -36,7 +40,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright tests
-        run: npx playwright test Amazon.spec.js --project=${{ inputs.browser }}
+        run: npx playwright test Amazon.spec.js --project=${{ inputs.browser }} --workers=${{ inputs.workers }}
         continue-on-error: true
 
       - name: Upload Playwright Report
