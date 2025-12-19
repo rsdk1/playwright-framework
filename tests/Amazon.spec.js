@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { chromium, test } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { encrypt, decrypt } from '../utils/encrypt';
 //import 'dotenv/config';
@@ -19,7 +19,10 @@ test.describe('Amazon Automation', () => {
     if (continueShoppinButton) {
       await page.locator('//*[text()="Continue shopping"]').click();
     }
-    else {
+    elif(chromiumError)
+    {
+     
+     await page.locator('//*[text()="Go to the Amazon.in home page to continue shopping"]').click();
 
     }
 
