@@ -29,9 +29,7 @@ test.describe('Amazon Automation', () => {
     }
 
     await home.searchProduct(searchProduct);
-
-
-
   });
+
 });
 
