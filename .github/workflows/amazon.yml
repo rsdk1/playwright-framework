@@ -30,6 +30,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -62,10 +63,12 @@ jobs:
           git fetch origin reports
           git checkout reports || git checkout -b reports
           mkdir -p "reports-$TIMESTAMP"
-          cp -r "../tmp-report-$TIMESTAMP/"* "reports-$TIMESTAMP/"
+          cp -r "tmp-report-$TIMESTAMP/"* "reports-$TIMESTAMP/"
           git add .
           git commit -m "Add Playwright report - $TIMESTAMP" || echo "No changes to commit"
           git push https://x-access-token:${GH_TOKEN}@github.com/rsdk1/playwright-framework.git reports
+
+
 
 
 
