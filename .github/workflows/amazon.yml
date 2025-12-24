@@ -23,10 +23,13 @@ jobs:
 
     env:
       KEY: ${{ secrets.KEY }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -49,3 +52,25 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report
+
+      - name: Update reports branch
+        run: |
+          # Checkout reports branch (create if doesn't exist)
+          git fetch origin reports
+          git checkout reports || git checkout -b reports
+          
+          # Create a new folder for this report using timestamp
+          TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')
+          mkdir -p "reports-$TIMESTAMP"
+          
+          # Copy the latest report into the new folder
+          cp -r playwright-report/* "reports-$TIMESTAMP/"
+          
+          # Commit and push
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Add Playwright report - $TIMESTAMP" || echo "No changes to commit"
+          git push origin reports   
+      
+      
