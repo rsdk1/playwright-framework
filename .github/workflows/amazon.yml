@@ -55,22 +55,24 @@ jobs:
 
       - name: Update reports branch
         run: |
-          # Checkout reports branch (create if doesn't exist)
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Fetch and checkout reports branch
           git fetch origin reports
           git checkout reports || git checkout -b reports
           
-          # Create a new folder for this report using timestamp
+          # Create timestamped folder
           TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')
           mkdir -p "reports-$TIMESTAMP"
           
-          # Copy the latest report into the new folder
-          cp -r playwright-report/* "reports-$TIMESTAMP/"
+          # Copy latest report
+          cp -r ../playwright-report/* "reports-$TIMESTAMP/"
           
           # Commit and push
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "Add Playwright report - $TIMESTAMP" || echo "No changes to commit"
-          git push origin reports   
-      
+          git push https://x-access-token:${GH_TOKEN}@github.com/rsdk1/playwright-framework.git reports
+
       
