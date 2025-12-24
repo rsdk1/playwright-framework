@@ -16,61 +16,54 @@ on:
         description: "Select how many workers"
         required: true
         default: '1'
-      
+
+permissions:
+  contents: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
 
     env:
       KEY: ${{ secrets.KEY }}
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: false
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+      - run: npx playwright install --with-deps
 
-      - name: Run Playwright tests
-        run: npx playwright test Amazon.spec.js --project=${{ inputs.browser }} --workers=${{ inputs.workers }}
+      - run: npx playwright test Amazon.spec.js --project=${{ inputs.browser }} --workers=${{ inputs.workers }}
         continue-on-error: true
 
-      - name: Upload Playwright Report
-        if: always()
+      - if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
           path: playwright-report
 
-      - name: Update reports branch
+      - if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
           TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')
-          cp -r playwright-report "tmp-report-$TIMESTAMP"
-          git fetch origin reports
+
+          mv playwright-report reports-temp
+
+          git fetch origin reports || true
           git checkout reports || git checkout -b reports
-          mkdir -p "reports-$TIMESTAMP"
-          cp -r "tmp-report-$TIMESTAMP/"* "reports-$TIMESTAMP/"
+
+          mkdir -p reports-$TIMESTAMP
+          mv reports-temp/* reports-$TIMESTAMP/
+
           git add .
-          git commit -m "Add Playwright report - $TIMESTAMP" || echo "No changes to commit"
-          git push https://x-access-token:${GH_TOKEN}@github.com/rsdk1/playwright-framework.git reports
-
-
-
-
-
-
-      
+          git commit -m "Add Playwright report - $TIMESTAMP" || exit 0
+          git push origin reports
