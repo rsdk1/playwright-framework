@@ -23,7 +23,7 @@ jobs:
 
     env:
       KEY: ${{ secrets.KEY }}
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     steps:
       - name: Checkout repository
