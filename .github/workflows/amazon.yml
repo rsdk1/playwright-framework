@@ -26,6 +26,8 @@ jobs:
 
     env:
       KEY: ${{ secrets.KEY }}
+      BUILD_NO: ${{ github.run_number }}
+      REPORT_URL: https://rsdk1.github.io/playwright-framework/reports-#${{ github.run_number }}/index.html
 
     steps:
       - uses: actions/checkout@v4
@@ -46,7 +48,7 @@ jobs:
       - if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-#${{ github.run_number }}
           path: playwright-report
 
       - if: always()
@@ -54,16 +56,39 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')
-
           mv playwright-report reports-temp
 
           git fetch origin reports || true
           git checkout reports || git checkout -b reports
 
-          mkdir -p reports-$TIMESTAMP
-          mv reports-temp/* reports-$TIMESTAMP/
+          mkdir -p reports-#${BUILD_NO}
+          mv reports-temp/* reports-#${BUILD_NO}/
 
           git add .
-          git commit -m "Add Playwright report - $TIMESTAMP" || exit 0
+          git commit -m "Add Playwright report - #${BUILD_NO}" || exit 0
           git push origin reports
+
+      - if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "Playwright Test Report - Build #${{ github.run_number }}"
+          to: ${{ secrets.EMAIL_TO }}
+          from: GitHub Actions <${{ secrets.EMAIL_USERNAME }}>
+          body: |
+            Hi,
+
+            The Playwright test execution has completed.
+
+            Build Number: #${{ github.run_number }}
+            Browser: ${{ inputs.browser }}
+
+            Test Report:
+            https://rsdk1.github.io/playwright-framework/reports-#${{ github.run_number }}/index.html
+
+            Regards,
+            GitHub Actions
+
